@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Assignment 2</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body class="container" onload = "initialize()">
+      <div class="title">
+        <span>Get To The Treasure!</span>
+      </div>
+
+      <div class="uiContainer">
+
+        <div class="sizeToggle">
+          <button id="5Button" class="button">5x5</button>
+          <button id="10Button" class="button">10x10</button>
+          <button id="15Button" class="button">15x15</button>
+          <button id="20Button" class="button">20x20</button>
+          <h3>HighScores</h3>
+          <ul class="highScoreList">
+            <li>5x5: <span id="5HS">0</span></li>
+            <li>10x10: <span id="10HS">0</span></li>
+            <li>15x15: <span id="15HS">0</span></li>
+            <li>20x20: <span id="20HS">0</span></li>
+          </ul>
+        </div>
+  
+        <div class="canvasContainer">
+          <canvas id = "canvas-main" width = "1000" height = "1000" style = "width: 80%; height: 80%"></canvas>
+        </div>
+  
+        <div class="textContainer">
+          <span>Time: <span id="timeValue">0</span></span>
+          <span>Score: <span id="scoreValue">0</span></span>
+          <h3>Scorring</h3>
+          <ul>
+            <li>+5 points for every step on the fastest path</li>
+            <li>-1 point for every other step</li>
+          </ul>
+          <h3>Controls</h3>
+          <ul>
+            <li>Movement: wasd, ijkl, or arrow keys</li>
+            <li>Toggle Hint: h</li>
+            <li>Toggle Breadcrumbs: b</li>
+            <li>Toggle Path to Finish: p</li>
+            <!-- <li>Reset the current maze: r</li> -->
+          </ul>
+        </div>
+      </div>
+
+	  <script src="scripts/script.js"></script>
+    <script src="scripts/maze.js"></script>
+    <script src="scripts/renderer.js"></script>
+  </body>
+</html>
