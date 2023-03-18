@@ -5,7 +5,6 @@ MyGame.screens['game-play'] = (function(game, input) {
     // TODO: [8  points] be able to reset highscores
     // TODO: [5  points] add shrink animation
     // TODO: [5  points] popup menue for pausing and continuing
-    // TODO: [5  points] add missing ball and using lives
     // TODO: [5  points] add another ball at 100 points
     // TODO: [3  points] add music
 
