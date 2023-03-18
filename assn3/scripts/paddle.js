@@ -2,7 +2,7 @@ MyGame.paddle = (function () {
   let that = {
       spec: {
         center: { x: 750 / 2, y: 710 },
-        fillColor: 'black',
+        fillColor: 'red',
         outlineColor: 'white',
         width: 100,
         height: 10,

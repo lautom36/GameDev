@@ -1,29 +1,23 @@
 MyGame.screens['game-play'] = (function(game, input) {
     'use strict';
 
-    // TODO: [15 points] check reflection
-    // TODO: [8  points] add count down
     // TODO: [8  points] store highscores
     // TODO: [8  points] be able to reset highscores
     // TODO: [5  points] add shrink animation
-    // TODO: [5  points] add ball speed increase as you break bricks
     // TODO: [5  points] popup menue for pausing and continuing
     // TODO: [5  points] add missing ball and using lives
     // TODO: [5  points] add another ball at 100 points
     // TODO: [3  points] add music
 
     let todo = [
-        'TODO: add music', 
         'TODO: add count down', 
-        'TODO: add missing ball and using lives', 
-        'TODO: add shrink animation',
-        'TODO: add ball speed increase as you break bricks',
-        'TODO: check reflection',
-        'TODO: add another ball at 100 points',
-        'TODO: popup menue for pausing and continuing',
         'TODO: store highscores',
         'TODO: be able to reset highscores',
-        'TODO: add music'
+        'TODO: add shrink animation',
+        'TODO: popup menue for pausing and continuing',
+        'TODO: add missing ball and using lives', 
+        'TODO: add another ball at 100 points',
+        'TODO: add music', 
     ];
     for (let i = 0; i < todo.length; i++){ console.log(todo[i]); }
 
@@ -35,9 +29,10 @@ MyGame.screens['game-play'] = (function(game, input) {
     let bricks = [];
     let paddle = null;
     let ball = null;
-    let countDown = false;
+    let countDown = true;
+    let countDownLeft = 3000;
     let firstTop = true;
-    let paused = false;
+    let paused = true;
     let rowCount = 0;
     let score = 0;
     let lives = 3;
@@ -48,12 +43,32 @@ MyGame.screens['game-play'] = (function(game, input) {
     }
 
     function update(elapsedTime) {
-        // console.log(ball)
-        if (!paused) {
-            ball.update(paddle, bricks);
-            checkBricks();
-            updateParticles(elapsedTime);
+        console.log(lives);
+        if (lives > 0) {
+            if (ball.spec.dead) {
+                countDown = true;
+                paused = true;
+            }
+
+            if (!paused) {
+                let dead = ball.update(paddle, bricks);
+                checkBricks();
+                updateParticles(elapsedTime);
+                if (dead) { lives -= 1; }
+            }
+    
+    
+            if (countDown) {
+                countDownLeft -= elapsedTime;
+                if (countDownLeft < 0) {
+                    countDown = false;
+                    paused = false;
+                    countDownLeft = 3000;
+                    ball.spec.dead = false;
+                }
+            }
         }
+        else { updateTopScores(); }
     }
 
     function render() {
@@ -76,8 +91,15 @@ MyGame.screens['game-play'] = (function(game, input) {
 
         // render lives
         renderLives();
+
         // render ball
-        MyGame.graphics.drawCircle(ball.spec);
+        if (lives > 0) {MyGame.graphics.drawCircle(ball.spec);}
+        else { renderEnding(); }
+        
+
+        if (countDown) {
+            renderCountdown();
+        }
     }
 
     function gameLoop(time) {
@@ -239,7 +261,7 @@ MyGame.screens['game-play'] = (function(game, input) {
         for (let i = 0; i < lives - 1; i++) {
             MyGame.graphics.drawRectangle({
                 center: { x: 60, y: 740 - 15 * i },
-                fillColor: 'black',
+                fillColor: 'red',
                 outlineColor: 'white',
                 width: 50,
                 height: 10,
@@ -270,6 +292,43 @@ MyGame.screens['game-play'] = (function(game, input) {
             strokeStyle: 'white',
             position: {x: 710, y: 720},
             text: score
+        });
+    }
+
+    function renderCountdown() {
+        let num = 3;
+        if (countDownLeft > 2000) { num = 3; }
+        else if (countDownLeft > 1000) { num = 2; }
+        else if (countDownLeft > 0) { num = 1; }
+
+        MyGame.graphics.drawText({
+            font: 'small-caps 128px arial',
+            fillStyle: 'white', 
+            strokeStyle: 'black',
+            position: {x: 750 / 2 - 32, y: 750 / 2},
+            text: num
+        });
+    }
+
+    function updateTopScores() {
+        //TODO:
+    }
+
+    function renderEnding() {
+        MyGame.graphics.drawText({
+            font: 'small-caps 128px arial',
+            fillStyle: 'white', 
+            strokeStyle: 'black',
+            position: {x: 64, y: 750 / 2 - 128},
+            text: `Game Over`
+        });
+
+        MyGame.graphics.drawText({
+            font: 'small-caps 128px arial',
+            fillStyle: 'white', 
+            strokeStyle: 'black',
+            position: {x: 144, y: 750 / 2},
+            text: `score: ${score}`
         });
     }
 

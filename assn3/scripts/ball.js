@@ -5,8 +5,11 @@ MyGame.ball = (function () {
         fillColor: 'white',
         outlineColor: 'black',
         radius: 10,
-        xVelocity: 0,
-        yVelocity: 1,
+        direction: {x: 0, y: 1},
+        speed: 2,
+        maxSpeed: 10,
+        dead: false,
+        ballsBroken: 0,
         dead: false,
       },
   };
@@ -19,43 +22,76 @@ MyGame.ball = (function () {
 
   collideWithWall = function() {
     // hits top wall
-    if ( that.spec.center.y < 0 ) {
-      that.spec.yVelocity = -that.spec.yVelocity;
+    if ( that.spec.center.y - that.spec.radius < 0 ) {
+      that.spec.direction.y = -that.spec.direction.y;
     }
     // hits bottom TODO: this needs to change
     if ( that.spec.center.y > 750 ) {
-      that.spec.yVelocity = -that.spec.yVelocity;
+      that.spec.dead = true;
     }
 
     // hits either side
-    if ( that.spec.center.x < 0 || that.spec.center.x > 750 - that.spec.radius) {
-      that.spec.xVelocity = -that.spec.xVelocity;
+    if ( that.spec.center.x - that.spec.radius < 0 || that.spec.center.x > 750 - that.spec.radius) {
+      that.spec.direction.x = -that.spec.direction.x;
     }
   }
 
   collideWithBrick = function(bricks) {
+    let hit = false;
     for(let row = 0; row < bricks.length; row++) {
       let rowList = bricks[row];
       for(let column = 0; column < rowList.length; column++) {
         let brick = rowList[column];
+
         //TODO: tweak the velocity values
         if (checkForCollide(brick, that)) {
-          that.spec.yVelocity *= -1;
+
+          let bottomSide  = brick.spec.center.y - (brick.spec.height / 2);
+          let topSide     = brick.spec.center.y + (brick.spec.height / 2);
+          let hitSide     = bottomSide <= that.spec.center.y && topSide >= that.spec.center.y;
+          
+          let leftBottom  = brick.spec.center.x - (brick.spec.width / 2);
+          let rightBottom = brick.spec.center.x + (brick.spec.width / 2);
+          let hitBot      = leftBottom <= that.spec.center.x && rightBottom >= that.spec.center.x;
+          
+          // if it hits the side change x direction
+          if (hitSide) {
+            that.spec.direction.x = -that.spec.direction.x;
+          }
+          // if it hits the top or bottom change the y direction
+          else if (hitBot) {
+            that.spec.direction.y = -that.spec.direction.y;
+          }
+          hit = true;
           let centerOfBrickX = brick.spec.center.x;
           let ballDistFromBrickCenterX = that.spec.center.x - centerOfBrickX;
-          that.spec.xVelocity = ballDistFromBrickCenterX * 0.05;
+          let vel = ballDistFromBrickCenterX / 100;
+          that.spec.ballsBroken += 1;
+
+          if (that.spec.ballsBroken ===  4) { that.spec.speed += 1; }
+          if (that.spec.ballsBroken === 12) { that.spec.speed += 1; }
+          if (that.spec.ballsBroken === 36) { that.spec.speed += 1; }
+          if (that.spec.ballsBroken === 62) { that.spec.speed += 1; }
+
+          that.spec.direction.x += vel
           brick.spec.hit = true;
         }
+        if (hit) { break; }
       }
+      if (hit) { break; }
     }
   }
 
   collideWithPaddle = function(paddle) {
     if ( checkForCollide(paddle, that) ) {
-      that.spec.yVelocity *= -1;
+      // flip y direction
+      that.spec.direction.y *= -1;
+
       let centerOfPaddleX = paddle.spec.center.x;
       let ballDistFromPaddleCenterX = that.spec.center.x - centerOfPaddleX;
-      that.spec.xVelocity = ballDistFromPaddleCenterX * 0.05;
+      let vel = ballDistFromPaddleCenterX / 100;
+
+      that.spec.direction.x += vel
     } 
   }
 
@@ -69,9 +105,26 @@ MyGame.ball = (function () {
   }
 
   that.update = function(paddle, bricks) {
-    that.spec.center.x += that.spec.xVelocity;
-    that.spec.center.y += that.spec.yVelocity;
+    that.spec.center.x += that.spec.direction.x * that.spec.speed;
+    that.spec.center.y += that.spec.direction.y * that.spec.speed;
+    
     checkCollisions(paddle, bricks);
+    if (that.spec.dead) {
+      that.spec = {
+        center: { x: 750 / 2, y: 750 * .75 }, 
+        fillColor: 'white',
+        outlineColor: 'black',
+        radius: 10,
+        direction: {x: 0, y: 1},
+        speed: 2,
+        maxSpeed: 10,
+        dead: true,
+        ballsBroken: 0,
+      };
+
+      return true;
+    }
+    return false;
   }
 
   return that;

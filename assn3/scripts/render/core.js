@@ -88,6 +88,7 @@ MyGame.graphics = (function() {
     }
 
     function drawText(spec) {
+        let width = context.measureText(spec.text);
         context.save();
 
         context.font = spec.font;
@@ -95,9 +96,9 @@ MyGame.graphics = (function() {
         context.strokeStyle = spec.strokeStyle;
         context.textBaseline = 'top';
 
-        context.translate(spec.position.x, spec.position.y);
+        context.translate(spec.position.x + width / 2, spec.position.y);
         context.rotate(spec.rotation);
-        context.translate(-spec.position.x, -spec.position.y);
+        context.translate(-(spec.position.x + width / 2), -spec.position.y);
 
 
         context.fillText(spec.text, spec.position.x, spec.position.y);
