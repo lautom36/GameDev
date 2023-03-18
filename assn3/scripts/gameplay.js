@@ -1,20 +1,14 @@
 MyGame.screens['game-play'] = (function(game, input) {
     'use strict';
 
-    // TODO: [8  points] store highscores
-    // TODO: [8  points] be able to reset highscores
     // TODO: [5  points] add shrink animation
     // TODO: [5  points] popup menue for pausing and continuing
     // TODO: [5  points] add another ball at 100 points
     // TODO: [3  points] add music
 
     let todo = [
-        'TODO: add count down', 
-        'TODO: store highscores',
-        'TODO: be able to reset highscores',
         'TODO: add shrink animation',
         'TODO: popup menue for pausing and continuing',
-        'TODO: add missing ball and using lives', 
         'TODO: add another ball at 100 points',
         'TODO: add music', 
     ];
@@ -28,10 +22,12 @@ MyGame.screens['game-play'] = (function(game, input) {
     let bricks = [];
     let paddle = null;
     let ball = null;
+    let balls = [];
+    let scoresUpdated = false;
     let countDown = true;
-    let countDownLeft = 3000;
     let firstTop = true;
     let paused = true;
+    let countDownLeft = 3000;
     let rowCount = 0;
     let score = 0;
     let lives = 3;
@@ -42,7 +38,6 @@ MyGame.screens['game-play'] = (function(game, input) {
     }
 
     function update(elapsedTime) {
-        console.log(lives);
         if (lives > 0) {
             if (ball.spec.dead) {
                 countDown = true;
@@ -67,7 +62,7 @@ MyGame.screens['game-play'] = (function(game, input) {
                 }
             }
         }
-        else { updateTopScores(); }
+        else if (!scoresUpdated) { updateTopScores(); }
     }
 
     function render() {
@@ -93,7 +88,9 @@ MyGame.screens['game-play'] = (function(game, input) {
 
         // render ball
         if (lives > 0) {MyGame.graphics.drawCircle(ball.spec);}
-        else { renderEnding(); }
+        else { 
+            renderEnding();
+        }
         
 
         if (countDown) {
@@ -310,7 +307,11 @@ MyGame.screens['game-play'] = (function(game, input) {
     }
 
     function updateTopScores() {
-        //TODO:
+        MyGame.storage.update(score);
+        let scores = MyGame.storage.report();
+        console.log('scores');
+        console.log(scores);
+        scoresUpdated = true;
     }
 
     function renderEnding() {
