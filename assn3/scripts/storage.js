@@ -6,6 +6,16 @@ MyGame.storage = (function () {
 
   if (previousScores !== null) {
       highScores = JSON.parse(previousScores);
+
+      let highest = parseInt(Object.keys(highScores)[0]);
+    
+      // find the biggest key
+      for (let key in highScores) {
+        if (parseInt(key) > highest) {
+          highest = parseInt(key);
+        }
+      }
+      index = highest + 1;
   }
 
   function add(value) {

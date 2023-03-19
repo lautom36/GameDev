@@ -1,12 +1,12 @@
 MyGame.ball = (function (color) {
   let that = {
       spec: {
-        center: { x: 750 / 2, y: 750 * .75 }, 
+        center: { x: 750 / 2, y: 695 }, 
         fillColor: color,
         outlineColor: 'black',
         radius: 10,
-        direction: {x: 0, y: 1},
-        speed: 1,
+        direction: {x: .3, y: -1},
+        speed: 1.5,
         maxSpeed: 10,
         dead: false,
         ballsBroken: 0,
@@ -26,7 +26,7 @@ MyGame.ball = (function (color) {
     }
 
     // hits bottom 
-    if ( that.spec.center.y > 750 ) {
+    if ( that.spec.center.y + that.spec.radius > 750 ) {
       that.spec.dead = true;
     }
 
@@ -54,15 +54,15 @@ MyGame.ball = (function (color) {
           let rightBottom = brick.spec.center.x + (brick.spec.width / 2);
           let hitBot      = leftBottom <= that.spec.center.x && rightBottom >= that.spec.center.x;
           
+          // if it hits the top or bottom change the y direction
+          if (hitBot) {
+            that.spec.direction.y = -that.spec.direction.y;
+          }
           // if it hits the side change x direction
-          if (hitSide) {
+          else if (hitSide) {
             that.spec.direction.x = -that.spec.direction.x;
           }
 
-          // if it hits the top or bottom change the y direction
-          else if (hitBot) {
-            that.spec.direction.y = -that.spec.direction.y;
-          }
 
           hit = true;
           let centerOfBrickX = brick.spec.center.x;
@@ -98,10 +98,10 @@ MyGame.ball = (function (color) {
   }
 
   checkForCollide = function(a, ball) {
-    let aLeftOfBall = ( a.spec.center.x + a.spec.width / 2 ) < ( ball.spec.center.x - ball.spec.radius);
-    let aRightOfBall = ( a.spec.center.x - a.spec.width / 2) > ( ball.spec.center.x + ball.spec.radius);
-    let aAboveBall = ( a.spec.center.y ) > ( ball.spec.center.y + ball.spec.radius);
-    let aBelowBall = ( a.spec.center.y + a.spec.height ) < ( ball.spec.center.y );
+    let aLeftOfBall  = ( a.spec.center.x + a.spec.width  / 2) < ( ball.spec.center.x - ball.spec.radius);
+    let aRightOfBall = ( a.spec.center.x - a.spec.width  / 2) > ( ball.spec.center.x + ball.spec.radius);
+    let aAboveBall   = ( a.spec.center.y - a.spec.height / 2) > ( ball.spec.center.y + ball.spec.radius);
+    let aBelowBall   = ( a.spec.center.y + a.spec.height / 2) < ( ball.spec.center.y - ball.spec.radius);
 
     return !( aLeftOfBall || aRightOfBall || aAboveBall || aBelowBall );
   }

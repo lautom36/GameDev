@@ -62,7 +62,7 @@ MyGame.screens['game-play'] = (function(game, input) {
                 }
 
                 if (lives > 0  && balls.length === 0) {
-                    let ball = new MyGame.ball('blue');
+                    let ball = new MyGame.ball('white');
                     balls.push(ball);
                 }
             }

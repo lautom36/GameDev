@@ -29,6 +29,8 @@ MyGame.screens['high-scores'] = (function(game) {
     function run() {
         let scores = MyGame.storage.report();
         console.log(scores);
+        scores.sort(function(a, b) { return b - a;});
+        console.log(scores);
         for (let i = 0; i < scores.length; i++) {
             let element = elements[i];
             element.innerHTML = scores[i];
