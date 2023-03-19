@@ -14,7 +14,6 @@ MyGame.particles = function(spec) {
   //
   //------------------------------------------------------------------
   function create() {
-    // console.log(spec);
     // get a random location across the surface area
     let x = spec.center.x - spec.width / 2 + Math.random() * spec.width;
     let y = spec.center.y - spec.height / 2 + Math.random() * spec.height;
