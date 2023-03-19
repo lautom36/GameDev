@@ -243,7 +243,7 @@ MyGame.screens['game-play'] = (function(game, input) {
 
         if (rowsRemaining < rowCount) {
             score += 25;
-            rowCount = bricks.length;
+            // rowCount = bricks.length;
             rowCount -= 1;
         }
 

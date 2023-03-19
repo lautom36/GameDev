@@ -6,7 +6,7 @@ MyGame.ball = (function (color) {
         outlineColor: 'black',
         radius: 10,
         direction: {x: .3, y: -1},
-        speed: 1.5,
+        speed: 2,
         maxSpeed: 10,
         dead: false,
         ballsBroken: 0,
@@ -67,15 +67,17 @@ MyGame.ball = (function (color) {
           hit = true;
           let centerOfBrickX = brick.spec.center.x;
           let ballDistFromBrickCenterX = that.spec.center.x - centerOfBrickX;
-          let vel = ballDistFromBrickCenterX / 100;
+          let vel = ballDistFromBrickCenterX / 50;
           that.spec.ballsBroken += 1;
 
-          if (that.spec.ballsBroken ===  4) { that.spec.speed += 1; }
-          if (that.spec.ballsBroken === 12) { that.spec.speed += 1; }
-          if (that.spec.ballsBroken === 36) { that.spec.speed += 1; }
-          if (that.spec.ballsBroken === 62) { that.spec.speed += 1; }
+          if (that.spec.ballsBroken ===  4) { that.spec.speed += .5; }
+          if (that.spec.ballsBroken === 12) { that.spec.speed += .5; }
+          if (that.spec.ballsBroken === 36) { that.spec.speed += .5; }
+          if (that.spec.ballsBroken === 62) { that.spec.speed +=  1; }
 
-          that.spec.direction.x += vel
+          // if (hitBot) { that.spec.direction.y += vel; }
+          // if (hitSide) { that.spec.direction.x += vel; }
+          that.spec.direction.x += vel   
           brick.spec.hit = true;
         }
         if (hit) { break; }
