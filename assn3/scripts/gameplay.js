@@ -2,13 +2,11 @@ MyGame.screens['game-play'] = (function(game, input) {
     'use strict';
 
     // TODO: [5  points] add shrink animation
-    // TODO: [5  points] popup menue for pausing and continuing
     // TODO: [5  points] add another ball at 100 points
     // TODO: [3  points] add music
 
     let todo = [
         'TODO: add shrink animation',
-        'TODO: popup menue for pausing and continuing',
         'TODO: add another ball at 100 points',
         'TODO: add music', 
     ];
@@ -31,10 +29,7 @@ MyGame.screens['game-play'] = (function(game, input) {
     let rowCount = 8;
     let score = 0;
     let lives = 3;
-    
-    let modal = document.getElementById("pauseModal");
-    
-    // console.log('init this bitch');
+       
 
     function processInput(elapsedTime) {
         myKeyboard.update(elapsedTime);
@@ -44,7 +39,6 @@ MyGame.screens['game-play'] = (function(game, input) {
         let state = JSON.parse(localStorage.getItem('MyGame.state'));
         if (!state.state) {
             localStorage['MyGame.state'] = JSON.stringify({state: true});
-            console.log('hit me');
             resetState();
         }
 
@@ -54,14 +48,10 @@ MyGame.screens['game-play'] = (function(game, input) {
             if (!paused) {
                 let toDelete = [];
                 for (let i = 0; i < balls.length; i++) {
-                    // console.log(balls.length);
                     let ball = balls[i];
-                    // console.log(balls);
                     let dead = ball.update(paddle, bricks);
                     if (dead) { lives -= 1; toDelete.push(balls[i]); }
-                    // if (toDelete.length > 0 ) {
-                    //     console.log(toDelete);
-                    // }
+
                 }
                 checkBricks();
                 updateParticles(elapsedTime);
@@ -112,7 +102,7 @@ MyGame.screens['game-play'] = (function(game, input) {
         // render lives
         renderLives();
 
-        // render ball
+        // render balls
         if (lives > 0) {
             for (let i = 0; i < balls.length; i++) {
                 let ball = balls[i];
@@ -151,26 +141,13 @@ MyGame.screens['game-play'] = (function(game, input) {
 
         //create a ball
         let ball = new MyGame.ball('white');
-        // console.log(ball);
         balls.push(ball);
-        // console.log(balls);
-
-        // render text and start frame
 
         
 
         // register inputs
         myKeyboard.register('Escape', function() {
-            console.log('hrer');
-            //
-            // Stop the game loop by canceling the request for the next animation frame
             cancelNextRequest = true;
-            //
-            // Then, return to the main menu
-            // game.showScreen('main-menu');
-            // paused = !paused;
-            // cancelNextRequest = false;  
-            // saveGameState();
             game.showScreen('pause');
         });
 
@@ -179,7 +156,6 @@ MyGame.screens['game-play'] = (function(game, input) {
         myKeyboard.register('d', paddle.moveRight);
 
         let state = JSON.parse(localStorage.getItem('MyGame.state'));
-        console.log(state);
 
     }
 
@@ -247,7 +223,6 @@ MyGame.screens['game-play'] = (function(game, input) {
         }
 
         if (toRemove.length > 0){
-            // console.log(toRemove);
             for (let row = 0; row < bricks.length; row++) {
                 let rowList = bricks[row];
                 for (let i = 0; i < toRemove.length; i++) {
@@ -272,6 +247,7 @@ MyGame.screens['game-play'] = (function(game, input) {
             rowCount -= 1;
         }
 
+        // TODO: try to fix
         // if ( score >= nextBall) {
         //     let ball = new MyGame.ball('red');
         //     balls.push(ball);
@@ -361,9 +337,6 @@ MyGame.screens['game-play'] = (function(game, input) {
 
     function updateTopScores() {
         MyGame.storage.update(score);
-        let scores = MyGame.storage.report();
-        // console.log('scores');
-        // console.log(scores);
         scoresUpdated = true;
     }
 
@@ -385,55 +358,7 @@ MyGame.screens['game-play'] = (function(game, input) {
         });
     }
 
-    function saveGameState() {
-        let state = {
-            bricks: bricks,
-            balls: balls,
-            paddle: paddle,
-            particles: particles,
-            scoresUpdated: scoresUpdated,
-            countDown: countDown,
-            firstTop: firstTop,
-            paused: paused,
-            countDownLeft: countDownLeft,
-            nextBall: nextBall,
-            rowCount: rowCount,
-            score: score,
-            lives: lives,
-        }
-
-        localStorage['MyGame.state'] = JSON.stringify(state);
-    }
-
-    function loadGameState() {
-        let state = JSON.parse(localStorage.getItem('MyGame.state'));
-        console.log('-------');
-        console.log('state:');
-        console.log(state);
-        console.log(state.state);
-        console.log('-------');
-        if (state.state) {
-            console.log('hit')
-            particles = state.particles;
-            bricks = state.bricks;
-            paddle = state.paddle;
-            balls = state.balls;
-            scoresUpdated = state.scoresUpdated;
-            countDown = state.countDown;
-            firstTop = state.firstTop;
-            paused = state.paused;
-            countDownLeft = state.countDownLeft;
-            nextBall = state.nextBall;
-            rowCount = state.rowCount;
-            score = state.score;
-            lives = state.lives;
-
-        }
-
-    }
-
     function resetState () {
-
         myKeyboard = input.Keyboard();
         particles = [];
         bricks = [];
@@ -448,17 +373,6 @@ MyGame.screens['game-play'] = (function(game, input) {
         rowCount = 8;
         score = 0;
         lives = 3;
-
-        // // create a paddle
-        // paddle = MyGame.paddle();
-    
-        // // create bricks
-        // makeBricks();
-
-        // //create a ball
-        // let ball = new MyGame.ball('white');
-        // // console.log(ball);
-        // balls.push(ball);
         initialize();
     }
 
