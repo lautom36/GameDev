@@ -25,7 +25,6 @@ MyGame.screens['game-play'] = (function(game, input) {
     let firstTop = true;
     let paused = true;
     let countDownLeft = 3000;
-    let returnCountDownLeft = 5000;
     let nextBall = 100;
     let rowCount = 8;
     let score = 0;
@@ -79,15 +78,7 @@ MyGame.screens['game-play'] = (function(game, input) {
                 }
             }
         }
-        else if (!scoresUpdated) { 
-            updateTopScores(); 
-        } else {
-            returnCountDownLeft -= elapsedTime;
-            if (returnCountDownLeft < 0) {
-                game.showScreen('main-menu'); 
-                localStorage['MyGame.state'] = JSON.stringify({state: false});
-            }
-        }
+        else if (!scoresUpdated) { updateTopScores(); }
     }
 
     function render() {
