@@ -3,8 +3,6 @@ MyGame.storage = (function () {
   let index = 0;
   let highScores = {};
   let previousScores = localStorage.getItem('MyGame.highScores');
-  // console.log('prevScores');
-  // console.log(previousScores);
 
   if (previousScores !== null) {
       highScores = JSON.parse(previousScores);
@@ -24,8 +22,6 @@ MyGame.storage = (function () {
   function report() {
       let scores = []
 
-      // console.log('highscores');
-      // console.log(highScores);
       for (let key in highScores) {
           scores.push(highScores[key])
       }
@@ -33,7 +29,6 @@ MyGame.storage = (function () {
   }
 
   function update(score) {
-    // console.log(score);
     let scores = report();
 
     if (scores.length < 5) {

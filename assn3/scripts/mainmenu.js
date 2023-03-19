@@ -8,9 +8,6 @@ MyGame.screens['main-menu'] = (function(game) {
             'click',
             function() {
                 game.showScreen('game-play');
-                // localStorage['MyGame.state'] = JSON.stringify({state});
-                console.log(localStorage['MyGame.state']);
-                // MyGame.screens['game-play'].initialize();
             });
         
         document.getElementById('id-high-scores').addEventListener(

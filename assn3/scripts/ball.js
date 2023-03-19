@@ -24,10 +24,10 @@ MyGame.ball = (function (color) {
     if ( that.spec.center.y - that.spec.radius < 0 ) {
       that.spec.direction.y = -that.spec.direction.y;
     }
-    // hits bottom TODO: this needs to change
+
+    // hits bottom 
     if ( that.spec.center.y > 750 ) {
       that.spec.dead = true;
-      console.log('hit');
     }
 
     // hits either side
@@ -58,10 +58,12 @@ MyGame.ball = (function (color) {
           if (hitSide) {
             that.spec.direction.x = -that.spec.direction.x;
           }
+
           // if it hits the top or bottom change the y direction
           else if (hitBot) {
             that.spec.direction.y = -that.spec.direction.y;
           }
+
           hit = true;
           let centerOfBrickX = brick.spec.center.x;
           let ballDistFromBrickCenterX = that.spec.center.x - centerOfBrickX;
@@ -110,17 +112,6 @@ MyGame.ball = (function (color) {
     
     checkCollisions(paddle, bricks);
     if (that.spec.dead) {
-      // that.spec = {
-      //   center: { x: 750 / 2, y: 750 * .75 }, 
-      //   fillColor: 'white',
-      //   outlineColor: 'black',
-      //   radius: 10,
-      //   direction: {x: 0, y: 1},
-      //   speed: 2,
-      //   maxSpeed: 10,
-      //   dead: true,
-      //   ballsBroken: 0,
-      // };
 
       return true;
     }
