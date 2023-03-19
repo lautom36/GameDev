@@ -6,7 +6,12 @@ MyGame.screens['main-menu'] = (function(game) {
         // Setup each of menu events for the screens
         document.getElementById('id-new-game').addEventListener(
             'click',
-            function() {game.showScreen('game-play'); });
+            function() {
+                game.showScreen('game-play');
+                // localStorage['MyGame.state'] = JSON.stringify({state});
+                console.log(localStorage['MyGame.state']);
+                // MyGame.screens['game-play'].initialize();
+            });
         
         document.getElementById('id-high-scores').addEventListener(
             'click',

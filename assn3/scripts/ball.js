@@ -1,16 +1,15 @@
-MyGame.ball = (function () {
+MyGame.ball = (function (color) {
   let that = {
       spec: {
         center: { x: 750 / 2, y: 750 * .75 }, 
-        fillColor: 'white',
+        fillColor: color,
         outlineColor: 'black',
         radius: 10,
         direction: {x: 0, y: 1},
-        speed: 2,
+        speed: 1,
         maxSpeed: 10,
         dead: false,
         ballsBroken: 0,
-        dead: false,
       },
   };
 
@@ -28,6 +27,7 @@ MyGame.ball = (function () {
     // hits bottom TODO: this needs to change
     if ( that.spec.center.y > 750 ) {
       that.spec.dead = true;
+      console.log('hit');
     }
 
     // hits either side
@@ -110,17 +110,17 @@ MyGame.ball = (function () {
     
     checkCollisions(paddle, bricks);
     if (that.spec.dead) {
-      that.spec = {
-        center: { x: 750 / 2, y: 750 * .75 }, 
-        fillColor: 'white',
-        outlineColor: 'black',
-        radius: 10,
-        direction: {x: 0, y: 1},
-        speed: 2,
-        maxSpeed: 10,
-        dead: true,
-        ballsBroken: 0,
-      };
+      // that.spec = {
+      //   center: { x: 750 / 2, y: 750 * .75 }, 
+      //   fillColor: 'white',
+      //   outlineColor: 'black',
+      //   radius: 10,
+      //   direction: {x: 0, y: 1},
+      //   speed: 2,
+      //   maxSpeed: 10,
+      //   dead: true,
+      //   ballsBroken: 0,
+      // };
 
       return true;
     }
