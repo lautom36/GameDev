@@ -34,6 +34,7 @@ MyGame.game = (function(screens) {
     //
     //------------------------------------------------------------------
     function initialize() {
+        localStorage['MyGame.state'] = JSON.stringify({state: false});
         let screen = null;
         //
         // Go through each of the screens and tell them to initialize

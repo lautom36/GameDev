@@ -2,13 +2,11 @@ MyGame.screens['game-play'] = (function(game, input) {
     'use strict';
 
     // TODO: [5  points] add shrink animation
-    // TODO: [5  points] popup menue for pausing and continuing
     // TODO: [5  points] add another ball at 100 points
     // TODO: [3  points] add music
 
     let todo = [
         'TODO: add shrink animation',
-        'TODO: popup menue for pausing and continuing',
         'TODO: add another ball at 100 points',
         'TODO: add music', 
     ];
@@ -21,34 +19,52 @@ MyGame.screens['game-play'] = (function(game, input) {
     let particles = [];
     let bricks = [];
     let paddle = null;
-    let ball = null;
     let balls = [];
     let scoresUpdated = false;
     let countDown = true;
     let firstTop = true;
     let paused = true;
     let countDownLeft = 3000;
-    let rowCount = 0;
+    let nextBall = 100;
+    let rowCount = 8;
     let score = 0;
     let lives = 3;
-
+       
 
     function processInput(elapsedTime) {
         myKeyboard.update(elapsedTime);
     }
 
     function update(elapsedTime) {
+        let state = JSON.parse(localStorage.getItem('MyGame.state'));
+        if (!state.state) {
+            localStorage['MyGame.state'] = JSON.stringify({state: true});
+            resetState();
+        }
+
+
         if (lives > 0) {
-            if (ball.spec.dead) {
-                countDown = true;
-                paused = true;
-            }
 
             if (!paused) {
-                let dead = ball.update(paddle, bricks);
+                let toDelete = [];
+                for (let i = 0; i < balls.length; i++) {
+                    let ball = balls[i];
+                    let dead = ball.update(paddle, bricks);
+                    if (dead) { lives -= 1; toDelete.push(balls[i]); }
+
+                }
                 checkBricks();
                 updateParticles(elapsedTime);
-                if (dead) { lives -= 1; }
+
+                for (let i = 0; i < toDelete.length; i++) {
+                    let index = balls.indexOf(toDelete[i]);
+                    balls.splice(index, 1);
+                }
+
+                if (lives > 0  && balls.length === 0) {
+                    let ball = new MyGame.ball('white');
+                    balls.push(ball);
+                }
             }
     
     
@@ -58,7 +74,7 @@ MyGame.screens['game-play'] = (function(game, input) {
                     countDown = false;
                     paused = false;
                     countDownLeft = 3000;
-                    ball.spec.dead = false;
+                    // ball.spec.dead = false;
                 }
             }
         }
@@ -86,8 +102,13 @@ MyGame.screens['game-play'] = (function(game, input) {
         // render lives
         renderLives();
 
-        // render ball
-        if (lives > 0) {MyGame.graphics.drawCircle(ball.spec);}
+        // render balls
+        if (lives > 0) {
+            for (let i = 0; i < balls.length; i++) {
+                let ball = balls[i];
+                MyGame.graphics.drawCircle(ball.spec);
+            }
+        }
         else { 
             renderEnding();
         }
@@ -119,27 +140,23 @@ MyGame.screens['game-play'] = (function(game, input) {
         makeBricks();
 
         //create a ball
-        ball = MyGame.ball()
-
-        // render text and start frame
+        let ball = new MyGame.ball('white');
+        balls.push(ball);
 
         
 
         // register inputs
         myKeyboard.register('Escape', function() {
-            //
-            // Stop the game loop by canceling the request for the next animation frame
             cancelNextRequest = true;
-            //
-            // Then, return to the main menu
-            // game.showScreen('main-menu');
-            paused = !paused;
-            cancelNextRequest = false;
+            game.showScreen('pause');
         });
 
         myKeyboard.register('a', paddle.moveLeft);
 
         myKeyboard.register('d', paddle.moveRight);
+
+        let state = JSON.parse(localStorage.getItem('MyGame.state'));
+
     }
 
     function run() {
@@ -186,6 +203,7 @@ MyGame.screens['game-play'] = (function(game, input) {
                 let brick = rowList[column];
                 if (brick.spec.hit) {
                     score += brick.spec.value;
+
                     if (brick.spec.value === 5 && firstTop && row < 1) {
                         firstTop = false;
                         paddle.spec.width = paddle.spec.width / 2;
@@ -196,19 +214,15 @@ MyGame.screens['game-play'] = (function(game, input) {
                         height: brick.spec.height,
                         color: brick.spec.fillColor,
                     });
+
                     particle.createParticles();
                     particles.push(particle);
                     toRemove.push(brick);
-                    // if (row = 7 && column == 0) {
-                    //     console.log(toRemove);
-                    // }
                 }
-
             }
         }
 
         if (toRemove.length > 0){
-            // console.log(toRemove);
             for (let row = 0; row < bricks.length; row++) {
                 let rowList = bricks[row];
                 for (let i = 0; i < toRemove.length; i++) {
@@ -220,10 +234,25 @@ MyGame.screens['game-play'] = (function(game, input) {
             }
         }
 
-        if (bricks.length < rowCount) {
-            score += 100;
-            rowCount = bricks.length;
+        let rowsRemaining = 0;
+        for (let i = 0; i < bricks.length; i++) {
+            if ( bricks[i].length > 0) {
+                rowsRemaining += 1;
+            }
         }
+
+        if (rowsRemaining < rowCount) {
+            score += 25;
+            // rowCount = bricks.length;
+            rowCount -= 1;
+        }
+
+        // TODO: try to fix
+        // if ( score >= nextBall) {
+        //     let ball = new MyGame.ball('red');
+        //     balls.push(ball);
+        //     nextBall += 100;
+        // }
     }
 
     function renderBricks() {
@@ -308,9 +337,6 @@ MyGame.screens['game-play'] = (function(game, input) {
 
     function updateTopScores() {
         MyGame.storage.update(score);
-        let scores = MyGame.storage.report();
-        console.log('scores');
-        console.log(scores);
         scoresUpdated = true;
     }
 
@@ -330,6 +356,24 @@ MyGame.screens['game-play'] = (function(game, input) {
             position: {x: 144, y: 750 / 2},
             text: `score: ${score}`
         });
+    }
+
+    function resetState () {
+        myKeyboard = input.Keyboard();
+        particles = [];
+        bricks = [];
+        paddle = null;
+        balls = [];
+        scoresUpdated = false;
+        countDown = true;
+        firstTop = true;
+        paused = true;
+        countDownLeft = 3000;
+        nextBall = 100;
+        rowCount = 8;
+        score = 0;
+        lives = 3;
+        initialize();
     }
 
 }(MyGame.game, MyGame.input));
