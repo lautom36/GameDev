@@ -1,4 +1,4 @@
-MyGame.screens['about'] = (function(game) {
+MyGame.screens['credits'] = (function(game) {
     'use strict';
     
     function initialize() {

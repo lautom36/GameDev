@@ -10,7 +10,7 @@ body {
     border-style: solid;
     border-width: 1px;
     font-size: 40px;
-    background-image: src("assets/backBackground.png");
+    background-image: url("https://wallpapers.com/images/featured/x9rj9wdyu9lnbgy7.jpg");
     background-color: #2E2EFE;
     
     
@@ -24,6 +24,7 @@ body {
     width: 750px;
     height: 750px;
     display: none;
+    background-color: rgba(0, 0, 0, .5);
 }
 
 #game .screen.active {
@@ -71,6 +72,7 @@ ul.menu li button:active {
 #game div h1 {
     font-size: 1em;
     text-align: center;
+    color: white;
 }
 
 #high-scores ol {
@@ -78,14 +80,16 @@ ul.menu li button:active {
     padding: 0;
     margin: 0;
     list-style: none;
+    color:white;
 }
 
 #game div p {
     font-size: 0.5em;
 }
 
-#about p {
+#credits p {
     text-align: center;
+    color:white;
 }
 
 #game .modal {

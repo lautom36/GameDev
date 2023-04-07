@@ -74,13 +74,9 @@ MyGame.graphics = (function() {
             height: spec.height,
             fillColor: spec.fillColor,    
         }
-        // console.log(left)
-        // console.log(right)
-        // console.log('----')
 
         drawRectangle(left);
         drawRectangle(right);
-        // console.log(bannana)
     }
 
     function drawRectangle(spec) {
@@ -139,11 +135,11 @@ MyGame.graphics = (function() {
 
         context.fillRect(
             spec.center.x - (spec.size / 2), spec.center.y - (spec.size / 2), 
-            spec.size - 2, spec.size - 2);
+            spec.size, spec.size);
 
         context.strokeRect(
             spec.center.x - (spec.width / 2), spec.center.y - (spec.height / 2), 
-            spec.width - 2, spec.height - 2);
+            spec.width, spec.height );
 
         context.restore();
     }

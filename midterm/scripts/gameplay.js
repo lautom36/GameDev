@@ -29,12 +29,12 @@ MyGame.screens['game-play'] = (function(game, input) {
             timeTillNext -= elapsedTime;
             // update platforms
             updatePlatforms(elapsedTime);
-            updateParticles(elapsedTime);
             checkHit();
             
             // update time
             score += elapsedTime;
         }
+        updateParticles(elapsedTime);
 
     }
 
@@ -58,7 +58,9 @@ MyGame.screens['game-play'] = (function(game, input) {
         renderParticles();
 
         // render player
-        MyGame.graphics.drawRectangle(player.spec);
+        if (!done) {
+            MyGame.graphics.drawRectangle(player.spec);
+        }
 
         // render time
         renderScore();
@@ -118,7 +120,10 @@ MyGame.screens['game-play'] = (function(game, input) {
         let left = {
             center: {x: leftWidth / 2 , y: center.y}, 
             width: leftWidth,
-            height: spec.height,   
+            height: spec.height,
+            offset: spec.height,
+            color: 'green',
+            direction: {x: 0, y: 0}  
         }
 
         let particle = MyGame.particles(left);
@@ -130,7 +135,10 @@ MyGame.screens['game-play'] = (function(game, input) {
         let right = {
             center: {x: rightBound + rightWidth / 2 , y: center.y }, 
             width: rightWidth,
-            height: spec.height,   
+            height: spec.height,
+            offset: spec.height,
+            color: 'green',
+            direction: {x: 0, y: 0} 
         }
         particle = MyGame.particles(right);
         particle.createParticles();
@@ -194,13 +202,12 @@ MyGame.screens['game-play'] = (function(game, input) {
     }
 
     function getNextCenter(x, width) {
-        //TODO: bound direction so we dont go past the line
         let percent = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
         let direction = Math.random() < 0.5 ? 1 : -1;
-        if (x < 20) {
-            direction = 1
-        }else if (x > 730) {
-            direction = -1;
+        if (x < 50) {
+            direction = -1
+        }else if (x > 700) {
+            direction = 1;
         }
         let offset = width * (percent / 100);
         return x + (direction * offset);
@@ -210,8 +217,8 @@ MyGame.screens['game-play'] = (function(game, input) {
 
         MyGame.graphics.drawText({
             font: 'small-caps 24px arial',
-            fillStyle: 'blue', 
-            strokeStyle: 'blue',
+            fillStyle: 'white', 
+            strokeStyle: 'white',
             position: {x: 850, y: 10},
             text: `score: ${(score / 1000).toFixed(2)}`
         });
@@ -226,6 +233,19 @@ MyGame.screens['game-play'] = (function(game, input) {
                 if (!insideLeft || !insideRight) {
                     done = true;
                     renderEnding();
+
+                    let spec = {
+                        center: player.spec.center, 
+                        width: player.spec.width,
+                        height: player.spec.height,
+                        offset: 0,
+                        color: player.spec.fillColor,
+                        direction: {x: 0, y: 1},  
+                    }
+
+                    let particle = MyGame.particles(spec);
+                    particle.createParticles();
+                    particles.push(particle);
                 }
             }
         }

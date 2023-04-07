@@ -16,17 +16,17 @@ MyGame.particles = function(spec) {
   function create() {
     // get a random location across the surface area
     let x = spec.center.x - spec.width / 2 + Math.random() * spec.width;
-    let y = spec.center.y - spec.height / 2 + Math.random() * spec.height - spec.height;
+    let y = spec.center.y - spec.height / 2 + Math.random() * spec.height - spec.offset;
     
     let p = {
             center: { x: x, y: y },
-            size: 4,  // Making square particles
+            size: 3,  // Making square particles
             direction: {x: 0, y: 1},
             speed: Math.random() * 100, // pixels per second
             rotation: 0,
             lifetime: Math.random() - .75,    // How long the particle should live, in seconds
             alive: 0,    // How long the particle has been alive, in seconds
-            color: 'green',
+            color: spec.color,
         };
     return p;
   }
@@ -51,8 +51,8 @@ MyGame.particles = function(spec) {
 
           //
           // Update its center
-        //   particle.center.x += (elapsedTime * particle.speed * particle.direction.x);
-        //   particle.center.y += (elapsedTime * particle.speed * particle.direction.y);
+          particle.center.x += (elapsedTime * particle.speed * particle.direction.x);
+          particle.center.y += (elapsedTime * particle.speed * particle.direction.y);
 
           // Rotate proportional to its speed
           // particle.rotation += particle.speed / 500;
@@ -70,18 +70,10 @@ MyGame.particles = function(spec) {
           delete particles[removeMe[particle]];
       }
       removeMe.length = 0;
-
-      //
-      // Generate some new particles
-      // for (let particle = 0; particle < 1; particle++) {
-      //     //
-      //     // Assign a unique name to each particle
-      //     particles[nextName++] = create();
-      // }
   }
 
   function createParticles() {
-    for (let particle = 0; particle < 500; particle++) {
+    for (let particle = 0; particle < spec.width * 2; particle++) {
         //
         // Assign a unique name to each particle
         particles[nextName++] = create();
